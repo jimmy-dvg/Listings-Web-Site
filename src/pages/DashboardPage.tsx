@@ -32,7 +32,7 @@ export function DashboardPage() {
           >
             <div>
               <h2 className="text-lg font-semibold text-slate-900">{listing.title}</h2>
-              <p className="text-sm text-slate-600">{listing.city}</p>
+              <p className="text-sm text-slate-600">{listing.location}</p>
             </div>
             <div className="flex gap-2">
               <Link

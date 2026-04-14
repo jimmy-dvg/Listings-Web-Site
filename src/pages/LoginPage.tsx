@@ -7,6 +7,7 @@ import { useSession } from '../hooks/useSession'
 export function LoginPage() {
   const { session } = useSession()
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -19,21 +20,19 @@ export function LoginPage() {
     setIsSubmitting(true)
     setMessage('')
 
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
-      },
+      password,
     })
 
     setIsSubmitting(false)
-    setMessage(error ? error.message : 'Magic link sent. Check your inbox.')
+    setMessage(error ? error.message : 'Logged in successfully.')
   }
 
   return (
-    <section className="mx-auto max-w-md space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="mx-auto max-w-md space-y-6 rounded-3xl border border-slate-200 bg-white/95 p-7 shadow-sm">
       <h1 className="text-2xl font-semibold text-slate-900">Login</h1>
-      <p className="text-sm text-slate-600">Use magic-link authentication via Supabase.</p>
+      <p className="text-sm text-slate-600">Sign in with your email and password.</p>
       <form onSubmit={onSubmit} className="space-y-4">
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Email</span>
@@ -45,12 +44,22 @@ export function LoginPage() {
             className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none"
           />
         </label>
+        <label className="block space-y-2 text-sm text-slate-700">
+          <span>Password</span>
+          <input
+            type="password"
+            required
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none"
+          />
+        </label>
         <button
           type="submit"
           disabled={isSubmitting}
           className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:opacity-60"
         >
-          {isSubmitting ? 'Sending...' : 'Send magic link'}
+          {isSubmitting ? 'Signing in...' : 'Login'}
         </button>
       </form>
       {message ? <p className="text-sm text-slate-700">{message}</p> : null}

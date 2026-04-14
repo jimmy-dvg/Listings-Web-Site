@@ -2,8 +2,8 @@ export type Listing = {
   id: string
   title: string
   price: number
-  city: string
-  imageUrl: string
+  location: string
+  coverImageUrl?: string
   description: string
   ownerId: string
   createdAt: string

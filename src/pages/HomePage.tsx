@@ -1,11 +1,41 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { ListingCard } from '../components/ListingCard'
-import { mockListings } from '../data/mockListings'
+import { fetchLatestListings } from '../lib/listings'
+import type { Listing } from '../types/listing'
 
 export function HomePage() {
-  const latestListings = [...mockListings]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 3)
+  const [latestListings, setLatestListings] = useState<Listing[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let active = true
+
+    const loadListings = async () => {
+      try {
+        setError('')
+        const data = await fetchLatestListings(6)
+        if (active) {
+          setLatestListings(data)
+        }
+      } catch (err) {
+        if (active) {
+          setError(err instanceof Error ? err.message : 'Unable to load latest listings.')
+        }
+      } finally {
+        if (active) {
+          setLoading(false)
+        }
+      }
+    }
+
+    void loadListings()
+
+    return () => {
+      active = false
+    }
+  }, [])
 
   return (
     <section className="space-y-8">
@@ -22,11 +52,16 @@ export function HomePage() {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-slate-900">Latest Listings</h2>
       </div>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {latestListings.map((listing) => (
-          <ListingCard key={listing.id} listing={listing} />
-        ))}
-      </div>
+      {loading ? <p className="text-sm text-slate-600">Loading latest listings...</p> : null}
+      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+
+      {!loading && !error ? (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {latestListings.map((listing) => (
+            <ListingCard key={listing.id} listing={listing} />
+          ))}
+        </div>
+      ) : null}
     </section>
   )
 }
