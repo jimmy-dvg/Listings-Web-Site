@@ -1,73 +1,125 @@
-# React + TypeScript + Vite
+# EstateHub - Real Estate Marketplace
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+EstateHub is a full-stack real estate web app for properties for sale.
 
-Currently, two official plugins are available:
+Visitors can browse and search property cards, view full property details with image slider and seller contacts, and authenticated users can create, edit, and delete their own property listings.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Live Demo
 
-## React Compiler
+Production URL:
+https://estatehub-real-estate-jimmy.netlify.app
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- React 19
+- Vite 8
+- TypeScript
+- Tailwind CSS 4
+- React Router
+- Supabase Auth, Postgres, Storage
+- Netlify (hosting and deploy)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Core Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Authentication
+  - Register
+  - Login
+  - Logout
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Public pages
+  - Home with latest properties
+  - Browse properties with search and pagination
+  - Property details page with image slider and seller contact info
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Protected pages
+  - My Properties dashboard with pagination
+  - Create property with multi-image upload
+  - Edit property with add/remove images
+  - Delete property with confirmation
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- Data and storage
+  - Listings persisted in Supabase Postgres
+  - Images stored in Supabase Storage bucket listing-photos
+  - Row Level Security policies for ownership and access rules
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Project Structure
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- [src/pages](src/pages)
+- [src/components](src/components)
+- [src/lib](src/lib)
+- [src/hooks](src/hooks)
+- [src/types](src/types)
+- [scripts/seed.js](scripts/seed.js)
+- [supabase/migrations](supabase/migrations)
+- [netlify.toml](netlify.toml)
+
+## Environment Variables
+
+Create a local file named .env.local with:
+
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+
+Optional for seeding in admin mode:
+
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+SUPABASE_URL=https://your-project-ref.supabase.co
+
+Note:
+The app frontend only needs VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY.
+
+## Local Development
+
+1. Install dependencies
+   npm install
+
+2. Start development server
+   npm run dev
+
+3. Build for production
+   npm run build
+
+## Seed Sample Data
+
+Run:
+
+npm run seed
+
+Seed behavior:
+
+- Creates or reuses users:
+  - steve@gmail.com / pass123
+  - maria@gmail.com / pass123
+- Creates sample for-sale properties per user
+- Uploads property photos to Supabase Storage
+
+## Database Migrations
+
+SQL migrations are stored locally in:
+[supabase/migrations](supabase/migrations)
+
+Main migrations include:
+
+- Initial schema and RLS setup
+- Public read policy for user profiles used in seller contact view
+
+## Netlify Deployment
+
+The project includes Netlify configuration in:
+[netlify.toml](netlify.toml)
+
+Current production setup:
+
+- Build command: npm run build
+- Publish directory: dist
+- SPA redirect to index.html
+
+Required Netlify environment variables (production):
+
+- VITE_SUPABASE_URL
+- VITE_SUPABASE_PUBLISHABLE_KEY
+
+## Notes
+
+- A bundle-size warning may appear during build. This does not block deployment.
+- If needed, future optimization can add route-level code splitting.
