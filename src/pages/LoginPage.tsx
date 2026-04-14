@@ -37,7 +37,10 @@ export function LoginPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Email</span>
           <input
+            id="login-email"
+            name="email"
             type="email"
+            autoComplete="email"
             required
             value={email}
             onChange={(event) => setEmail(event.target.value)}
@@ -47,7 +50,10 @@ export function LoginPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Password</span>
           <input
+            id="login-password"
+            name="password"
             type="password"
+            autoComplete="current-password"
             required
             value={password}
             onChange={(event) => setPassword(event.target.value)}

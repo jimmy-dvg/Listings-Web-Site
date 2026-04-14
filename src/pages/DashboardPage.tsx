@@ -55,12 +55,12 @@ export function DashboardPage() {
   return (
     <section className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">My Listings</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">My Properties for Sale</h1>
         <Link
           to="/dashboard/publish"
           className="rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-amber-300"
         >
-          Publish listing
+          Add property
         </Link>
       </div>
 
@@ -70,7 +70,7 @@ export function DashboardPage() {
 
         {!loading && !error && listings.length === 0 ? (
           <p className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600 shadow-sm">
-            You have no listings yet.
+            You have no properties listed for sale yet.
           </p>
         ) : null}
 

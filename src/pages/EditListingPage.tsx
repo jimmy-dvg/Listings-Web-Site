@@ -75,7 +75,7 @@ export function EditListingPage() {
     event.preventDefault()
 
     if (!id || !session?.user.id) {
-      setError('You must be logged in to edit this listing.')
+      setError('You must be logged in to edit this property.')
       return
     }
 
@@ -98,20 +98,20 @@ export function EditListingPage() {
 
       navigate('/dashboard', { replace: true })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to update listing.')
+      setError(err instanceof Error ? err.message : 'Unable to update property.')
     } finally {
       setIsSubmitting(false)
     }
   }
 
   if (loading) {
-    return <p className="text-sm text-slate-600">Loading listing...</p>
+    return <p className="text-sm text-slate-600">Loading property...</p>
   }
 
   return (
     <section className="mx-auto max-w-2xl space-y-4">
-      <h1 className="text-2xl font-semibold text-slate-900">Edit listing</h1>
-      <p className="text-slate-600">Modify listing fields, add new photos, and remove old photos.</p>
+      <h1 className="text-2xl font-semibold text-slate-900">Edit Property for Sale</h1>
+      <p className="text-slate-600">Modify property fields, add new photos, and remove old photos.</p>
 
       <form className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" onSubmit={onSubmit}>
         <label className="block space-y-2 text-sm text-slate-700">

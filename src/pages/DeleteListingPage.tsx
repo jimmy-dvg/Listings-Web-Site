@@ -25,7 +25,7 @@ export function DeleteListingPage() {
       await deleteMyListingById(id)
       navigate('/dashboard', { replace: true })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to delete listing.')
+      setError(err instanceof Error ? err.message : 'Unable to delete property.')
     } finally {
       setIsSubmitting(false)
     }
@@ -33,8 +33,8 @@ export function DeleteListingPage() {
 
   return (
     <section className="mx-auto max-w-2xl space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h1 className="text-2xl font-semibold text-slate-900">Delete Listing</h1>
-      <p className="text-slate-600">Confirm deletion for listing {id}. This action cannot be undone.</p>
+      <h1 className="text-2xl font-semibold text-slate-900">Delete Property</h1>
+      <p className="text-slate-600">Confirm deletion for property {id}. This action cannot be undone.</p>
       <form className="space-y-4" onSubmit={onSubmit}>
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Type DELETE to confirm</span>
@@ -52,7 +52,7 @@ export function DeleteListingPage() {
             disabled={!canSubmit || isSubmitting}
             className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
           >
-            {isSubmitting ? 'Deleting...' : 'Delete listing'}
+            {isSubmitting ? 'Deleting...' : 'Delete property'}
           </button>
           <Link to="/dashboard" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">
             Cancel

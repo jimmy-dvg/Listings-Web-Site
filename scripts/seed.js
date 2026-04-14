@@ -22,44 +22,50 @@ const usersToSeed = [
 
 const listingTemplates = [
   {
-    title: 'Modern Downtown Studio',
-    description: 'Compact and modern studio near cafes and transit.',
-    price: 980,
+    title: 'Modern 3-Bedroom Home with Pool',
+    description: 'Move-in ready family home with private pool, garage, and updated kitchen.',
+    price: 425000,
     location: 'Austin, TX',
   },
   {
-    title: 'Bright Loft with Large Windows',
-    description: 'Open loft with natural light and work-friendly layout.',
-    price: 1450,
+    title: 'Luxury Downtown Condo',
+    description: 'High-floor condo with skyline views, concierge services, and premium finishes.',
+    price: 610000,
     location: 'Seattle, WA',
   },
   {
-    title: 'Cozy One-bedroom by the Park',
-    description: 'Comfortable one-bedroom in a quiet neighborhood.',
-    price: 1250,
+    title: 'Renovated Townhouse Near Park',
+    description: 'Stylish townhouse with finished basement and private patio close to schools.',
+    price: 355000,
     location: 'Chicago, IL',
   },
   {
-    title: 'Family Apartment with Balcony',
-    description: 'Spacious two-bedroom apartment with city views.',
-    price: 1700,
+    title: '4-Bedroom Suburban Family House',
+    description: 'Spacious lot, open floor plan, and upgraded appliances in a calm neighborhood.',
+    price: 540000,
     location: 'Denver, CO',
   },
   {
-    title: 'Minimal Home with Backyard',
-    description: 'Single-level home with private yard and storage space.',
-    price: 2100,
+    title: 'Contemporary Home with Large Backyard',
+    description: 'Single-family home with home office, landscaped yard, and two-car garage.',
+    price: 485000,
     location: 'Portland, OR',
+  },
+  {
+    title: 'Waterfront Villa with Private Dock',
+    description: 'Exclusive villa featuring water views, private dock, and luxury interior design.',
+    price: 1295000,
+    location: 'Miami, FL',
   },
 ]
 
 const photoSourceUrls = [
-  'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1400&q=80',
-  'https://images.unsplash.com/photo-1493666438817-866a91353ca9?auto=format&fit=crop&w=1400&q=80',
-  'https://images.unsplash.com/photo-1484101403633-562f891dc89a?auto=format&fit=crop&w=1400&q=80',
-  'https://images.unsplash.com/photo-1502672023488-70e25813eb80?auto=format&fit=crop&w=1400&q=80',
-  'https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1400&q=80',
-  'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1400&q=80',
+  'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1600&q=80',
+  'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=1600&q=80',
+  'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1600&q=80',
+  'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1600&q=80',
+  'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1600&q=80',
+  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80',
 ]
 
 function randomInt(min, max) {
@@ -179,7 +185,7 @@ async function seedListingsForUser(user, userSeed, templateOffset) {
         user_id: user.id,
         title: `${template.title} #${i + 1}`,
         description: template.description,
-        price: template.price + i * 15,
+        price: template.price + i * 2500,
         location: template.location,
       })
       .select('id, title')
@@ -199,7 +205,7 @@ async function seedListingsForUser(user, userSeed, templateOffset) {
       })
     }
 
-    console.log(`Seeded listing ${listing.title} (${photosCount} photos) for ${userSeed.email}`)
+    console.log(`Seeded property ${listing.title} (${photosCount} photos) for ${userSeed.email}`)
   }
 }
 
@@ -221,7 +227,7 @@ async function main() {
   }
 
   await cleanExistingListingsForUsers(seededUsers.map((entry) => entry.user.id))
-  console.log('Removed previous listings for seed users')
+  console.log('Removed previous properties for seed users')
 
   for (const entry of seededUsers) {
     await seedListingsForUser(entry.user, entry.userSeed, entry.index * 2)

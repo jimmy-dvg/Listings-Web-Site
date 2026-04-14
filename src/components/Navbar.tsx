@@ -11,7 +11,7 @@ export function Navbar() {
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
         <NavLink to="/" className="text-lg font-semibold tracking-tight text-slate-900">
-          TinyListings
+          EstateHub
         </NavLink>
 
         <nav className="flex flex-wrap items-center gap-2 text-sm text-slate-700">
@@ -19,15 +19,15 @@ export function Navbar() {
             Home
           </NavLink>
           <NavLink to="/listings" className={navClass}>
-            Browse Listings
+            Browse Properties
           </NavLink>
           {session ? (
             <>
               <NavLink to="/dashboard" className={navClass}>
-                My Listings
+                My Properties
               </NavLink>
               <NavLink to="/dashboard/publish" className={navClass}>
-                Publish
+                Sell Property
               </NavLink>
               <button
                 type="button"

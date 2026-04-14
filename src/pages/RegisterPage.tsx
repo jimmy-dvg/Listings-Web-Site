@@ -43,7 +43,10 @@ export function RegisterPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Name</span>
           <input
+            id="register-name"
+            name="name"
             type="text"
+            autoComplete="name"
             required
             value={name}
             onChange={(event) => setName(event.target.value)}
@@ -53,7 +56,10 @@ export function RegisterPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Email</span>
           <input
+            id="register-email"
+            name="email"
             type="email"
+            autoComplete="email"
             required
             value={email}
             onChange={(event) => setEmail(event.target.value)}
@@ -63,7 +69,10 @@ export function RegisterPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Password</span>
           <input
+            id="register-password"
+            name="password"
             type="password"
+            autoComplete="new-password"
             minLength={6}
             required
             value={password}

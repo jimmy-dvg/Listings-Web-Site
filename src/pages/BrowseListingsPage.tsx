@@ -49,8 +49,8 @@ export function BrowseListingsPage() {
   return (
     <section className="space-y-6">
       <div className="space-y-3">
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Browse Listings</h1>
-        <p className="text-slate-600">Search listings and move across pages.</p>
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Browse Properties for Sale</h1>
+        <p className="text-slate-600">Search homes by title, location, or description and move across pages.</p>
       </div>
 
       <input
@@ -76,7 +76,7 @@ export function BrowseListingsPage() {
       ) : null}
 
       {!loading && !error && listings.length === 0 ? (
-        <p className="text-sm text-slate-600">No listings match your search.</p>
+        <p className="text-sm text-slate-600">No properties match your search.</p>
       ) : null}
 
       <div className="flex items-center gap-2">

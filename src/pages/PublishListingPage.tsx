@@ -19,7 +19,7 @@ export function PublishListingPage() {
     event.preventDefault()
 
     if (!session?.user.id) {
-      setError('You must be logged in to publish a listing.')
+      setError('You must be logged in to publish a property.')
       return
     }
 
@@ -40,7 +40,7 @@ export function PublishListingPage() {
 
       navigate('/dashboard', { replace: true })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to publish listing.')
+      setError(err instanceof Error ? err.message : 'Unable to publish property.')
     } finally {
       setIsSubmitting(false)
     }
@@ -48,8 +48,8 @@ export function PublishListingPage() {
 
   return (
     <section className="mx-auto max-w-2xl space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h1 className="text-2xl font-semibold text-slate-900">Create Listing</h1>
-      <p className="text-slate-600">Fill out listing details and upload one or more photos.</p>
+      <h1 className="text-2xl font-semibold text-slate-900">Create Property for Sale</h1>
+      <p className="text-slate-600">Fill out property details and upload one or more photos.</p>
 
       <form className="space-y-4" onSubmit={onSubmit}>
         <label className="block space-y-2 text-sm text-slate-700">
@@ -113,7 +113,7 @@ export function PublishListingPage() {
           disabled={isSubmitting}
           className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
         >
-          {isSubmitting ? 'Publishing...' : 'Publish listing'}
+          {isSubmitting ? 'Publishing...' : 'Publish property'}
         </button>
 
         {error ? <p className="text-sm text-red-600">{error}</p> : null}

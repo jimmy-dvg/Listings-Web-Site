@@ -40,17 +40,17 @@ export function HomePage() {
   return (
     <section className="space-y-8">
       <div className="space-y-3">
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Welcome to TinyListings</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Welcome to EstateHub</h1>
         <p className="max-w-2xl text-slate-600">
-          Find your next place quickly. Browse all listings or publish your own after login.
+          Discover homes and apartments for sale. Explore the latest properties or publish your own for buyers.
         </p>
         <Link to="/listings" className="inline-flex rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white">
-          Browse all listings
+          Browse properties for sale
         </Link>
       </div>
 
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-slate-900">Latest Listings</h2>
+        <h2 className="text-xl font-semibold text-slate-900">Latest Properties for Sale</h2>
       </div>
       {loading ? <p className="text-sm text-slate-600">Loading latest listings...</p> : null}
       {error ? <p className="text-sm text-red-600">{error}</p> : null}

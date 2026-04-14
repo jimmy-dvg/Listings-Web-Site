@@ -58,9 +58,9 @@ export function ListingDetailsPage() {
   if (!listing) {
     return (
       <section className="space-y-4">
-        <h1 className="text-2xl font-semibold text-slate-900">Listing not found</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">Property not found</h1>
         <Link to="/listings" className="text-sm font-medium text-slate-700 underline">
-          Go back to listings
+          Go back to properties
         </Link>
       </section>
     )
@@ -123,7 +123,7 @@ export function ListingDetailsPage() {
         <article className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{listing.title}</h1>
           <p className="text-slate-600">{listing.location}</p>
-          <p className="text-2xl font-bold text-slate-900">${listing.price}</p>
+          <p className="text-2xl font-bold text-slate-900">${listing.price.toLocaleString()}</p>
           <p className="text-sm text-slate-500">Posted on {new Date(listing.createdAt).toLocaleDateString()}</p>
 
           <div>
