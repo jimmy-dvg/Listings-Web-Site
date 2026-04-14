@@ -78,26 +78,36 @@ export function DashboardPage() {
           {listings.map((listing) => (
           <article
             key={listing.id}
-            className="flex h-full flex-col justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+            className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
           >
-            <div>
-              <h2 className="line-clamp-2 text-lg font-semibold text-slate-900">{listing.title}</h2>
-              <p className="text-sm text-slate-600">{listing.location}</p>
-              <p className="mt-2 text-xs text-slate-500">Created {new Date(listing.createdAt).toLocaleDateString()}</p>
-            </div>
-            <div className="flex gap-2">
-              <Link
-                to={`/dashboard/edit/${listing.id}`}
-                className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-800"
-              >
-                Edit
-              </Link>
-              <Link
-                to={`/dashboard/delete/${listing.id}`}
-                className="rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700"
-              >
-                Delete
-              </Link>
+            <img
+              src={
+                listing.coverImageUrl ??
+                'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80'
+              }
+              alt={listing.title}
+              className="h-44 w-full object-cover"
+            />
+            <div className="flex h-full flex-col justify-between gap-4 p-4">
+              <div>
+                <h2 className="line-clamp-2 text-lg font-semibold text-slate-900">{listing.title}</h2>
+                <p className="text-sm text-slate-600">{listing.location}</p>
+                <p className="mt-2 text-xs text-slate-500">Created {new Date(listing.createdAt).toLocaleDateString()}</p>
+              </div>
+              <div className="flex gap-2">
+                <Link
+                  to={`/dashboard/edit/${listing.id}`}
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-800"
+                >
+                  Edit
+                </Link>
+                <Link
+                  to={`/dashboard/delete/${listing.id}`}
+                  className="rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700"
+                >
+                  Delete
+                </Link>
+              </div>
             </div>
           </article>
           ))}
