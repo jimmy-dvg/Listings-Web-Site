@@ -55,6 +55,8 @@ export function PublishListingPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Title</span>
           <input
+            id="publish-title"
+            name="title"
             type="text"
             required
             value={title}
@@ -66,6 +68,8 @@ export function PublishListingPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Location</span>
           <input
+            id="publish-location"
+            name="location"
             type="text"
             required
             value={location}
@@ -77,6 +81,8 @@ export function PublishListingPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Price</span>
           <input
+            id="publish-price"
+            name="price"
             type="number"
             min="0"
             step="0.01"
@@ -90,6 +96,8 @@ export function PublishListingPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Description</span>
           <textarea
+            id="publish-description"
+            name="description"
             required
             value={description}
             onChange={(event) => setDescription(event.target.value)}
@@ -100,6 +108,8 @@ export function PublishListingPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Photos (multiple files)</span>
           <input
+            id="publish-photos"
+            name="photos"
             type="file"
             accept="image/*"
             multiple

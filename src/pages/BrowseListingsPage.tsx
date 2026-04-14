@@ -54,6 +54,8 @@ export function BrowseListingsPage() {
       </div>
 
       <input
+        id="browse-search"
+        name="search"
         type="search"
         value={search}
         onChange={(event) => {

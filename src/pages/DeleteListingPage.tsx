@@ -39,6 +39,8 @@ export function DeleteListingPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Type DELETE to confirm</span>
           <input
+            id="delete-confirm"
+            name="deleteConfirm"
             type="text"
             value={confirmText}
             onChange={(event) => setConfirmText(event.target.value)}

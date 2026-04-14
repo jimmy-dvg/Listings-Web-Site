@@ -117,6 +117,8 @@ export function EditListingPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Title</span>
           <input
+            id="edit-title"
+            name="title"
             type="text"
             required
             value={title}
@@ -128,6 +130,8 @@ export function EditListingPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Location</span>
           <input
+            id="edit-location"
+            name="location"
             type="text"
             required
             value={location}
@@ -139,6 +143,8 @@ export function EditListingPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Price</span>
           <input
+            id="edit-price"
+            name="price"
             type="number"
             min="0"
             step="0.01"
@@ -152,6 +158,8 @@ export function EditListingPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Description</span>
           <textarea
+            id="edit-description"
+            name="description"
             required
             value={description}
             onChange={(event) => setDescription(event.target.value)}
@@ -182,6 +190,8 @@ export function EditListingPage() {
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Add new photos</span>
           <input
+            id="edit-new-photos"
+            name="newPhotos"
             type="file"
             accept="image/*"
             multiple
