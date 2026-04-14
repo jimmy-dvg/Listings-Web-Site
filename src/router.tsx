@@ -1,26 +1,15 @@
-import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
+import { createBrowserRouter } from 'react-router-dom'
 import { AppLayout } from './AppLayout'
-import { useSession } from './hooks/useSession'
+import { ProtectedRoute } from './components/ProtectedRoute'
+import { BrowseListingsPage } from './pages/BrowseListingsPage'
 import { DashboardPage } from './pages/DashboardPage'
+import { DeleteListingPage } from './pages/DeleteListingPage'
 import { EditListingPage } from './pages/EditListingPage'
 import { HomePage } from './pages/HomePage'
 import { ListingDetailsPage } from './pages/ListingDetailsPage'
 import { LoginPage } from './pages/LoginPage'
-import { NewListingPage } from './pages/NewListingPage'
-
-function ProtectedRoute() {
-  const { session, loading } = useSession()
-
-  if (loading) {
-    return <p className="text-sm text-slate-600">Checking session...</p>
-  }
-
-  if (!session) {
-    return <Navigate to="/login" replace />
-  }
-
-  return <Outlet />
-}
+import { PublishListingPage } from './pages/PublishListingPage'
+import { RegisterPage } from './pages/RegisterPage'
 
 export const router = createBrowserRouter([
   {
@@ -32,7 +21,11 @@ export const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: 'listings/:listingId',
+        path: 'listings',
+        element: <BrowseListingsPage />,
+      },
+      {
+        path: 'listing/:id',
         element: <ListingDetailsPage />,
       },
       {
@@ -40,21 +33,40 @@ export const router = createBrowserRouter([
         element: <LoginPage />,
       },
       {
-        element: <ProtectedRoute />,
-        children: [
-          {
-            path: 'dashboard',
-            element: <DashboardPage />,
-          },
-          {
-            path: 'dashboard/new',
-            element: <NewListingPage />,
-          },
-          {
-            path: 'dashboard/:listingId/edit',
-            element: <EditListingPage />,
-          },
-        ],
+        path: 'register',
+        element: <RegisterPage />,
+      },
+      {
+        path: 'dashboard',
+        element: (
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'dashboard/publish',
+        element: (
+          <ProtectedRoute>
+            <PublishListingPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'dashboard/edit/:id',
+        element: (
+          <ProtectedRoute>
+            <EditListingPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'dashboard/delete/:id',
+        element: (
+          <ProtectedRoute>
+            <DeleteListingPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

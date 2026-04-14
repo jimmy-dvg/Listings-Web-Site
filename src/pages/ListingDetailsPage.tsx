@@ -2,14 +2,14 @@ import { Link, useParams } from 'react-router-dom'
 import { mockListings } from '../data/mockListings'
 
 export function ListingDetailsPage() {
-  const { listingId } = useParams()
-  const listing = mockListings.find((item) => item.id === listingId)
+  const { id } = useParams()
+  const listing = mockListings.find((item) => item.id === id)
 
   if (!listing) {
     return (
       <section className="space-y-4">
         <h1 className="text-2xl font-semibold text-slate-900">Listing not found</h1>
-        <Link to="/" className="text-sm font-medium text-slate-700 underline">
+        <Link to="/listings" className="text-sm font-medium text-slate-700 underline">
           Go back to listings
         </Link>
       </section>
