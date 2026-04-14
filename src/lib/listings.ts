@@ -2,6 +2,7 @@ import { supabase } from './supabase'
 import type { Listing } from '../types/listing'
 
 type ListingPhotoRow = {
+  id: string
   photo_path: string
   sort_order: number | null
 }
@@ -30,6 +31,27 @@ export type ListingDetails = Listing & {
     email: string | null
     phoneNumber: string | null
   }
+}
+
+export type EditableListing = {
+  id: string
+  title: string
+  description: string
+  price: number
+  location: string
+  photos: Array<{
+    id: string
+    path: string
+    url: string
+    sortOrder: number
+  }>
+}
+
+type ListingWriteInput = {
+  title: string
+  description: string
+  price: number
+  location: string
 }
 
 function getPublicPhotoUrl(path: string | null | undefined) {
@@ -68,9 +90,59 @@ function baseListingSelectQuery() {
   return supabase
     .from('listings')
     .select(
-      'id,user_id,title,description,price,location,created_at,listing_photos(photo_path,sort_order)',
+      'id,user_id,title,description,price,location,created_at,listing_photos(id,photo_path,sort_order)',
       { count: 'exact' },
     )
+}
+
+function sanitizeFileName(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9.-]+/g, '-').replace(/(^-|-$)/g, '')
+}
+
+async function uploadListingPhotos(params: {
+  listingId: string
+  ownerId: string
+  files: File[]
+  startingSortOrder?: number
+}) {
+  const { listingId, ownerId, files, startingSortOrder = 0 } = params
+
+  if (files.length === 0) {
+    return
+  }
+
+  const rowsToInsert: Array<{
+    listing_id: string
+    owner_id: string
+    photo_path: string
+    sort_order: number
+  }> = []
+
+  for (const [index, file] of files.entries()) {
+    const extension = file.name.includes('.') ? file.name.split('.').pop() : 'jpg'
+    const fileName = `${Date.now()}-${index + 1}-${sanitizeFileName(file.name.replace(/\.[^/.]+$/, ''))}.${extension}`
+    const path = `${listingId}/${fileName}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('listing-photos')
+      .upload(path, file, { upsert: false, contentType: file.type || 'image/jpeg' })
+
+    if (uploadError) {
+      throw uploadError
+    }
+
+    rowsToInsert.push({
+      listing_id: listingId,
+      owner_id: ownerId,
+      photo_path: path,
+      sort_order: startingSortOrder + index,
+    })
+  }
+
+  const { error: insertPhotosError } = await supabase.from('listing_photos').insert(rowsToInsert)
+  if (insertPhotosError) {
+    throw insertPhotosError
+  }
 }
 
 function sanitizeSearchToken(value: string) {
@@ -190,9 +262,157 @@ export async function fetchMyListingsPage(params: {
 }
 
 export async function deleteMyListingById(listingId: string) {
+  const { data: photoRows, error: photoQueryError } = await supabase
+    .from('listing_photos')
+    .select('photo_path')
+    .eq('listing_id', listingId)
+
+  if (photoQueryError) {
+    throw photoQueryError
+  }
+
+  const paths = (photoRows ?? []).map((row) => row.photo_path)
+  if (paths.length > 0) {
+    const { error: storageError } = await supabase.storage.from('listing-photos').remove(paths)
+    if (storageError) {
+      throw storageError
+    }
+  }
+
   const { error } = await supabase.from('listings').delete().eq('id', listingId)
 
   if (error) {
     throw error
+  }
+}
+
+export async function createListingWithPhotos(params: {
+  userId: string
+  listing: ListingWriteInput
+  files: File[]
+}) {
+  const { userId, listing, files } = params
+
+  const { data, error } = await supabase
+    .from('listings')
+    .insert({
+      user_id: userId,
+      title: listing.title,
+      description: listing.description,
+      price: listing.price,
+      location: listing.location,
+    })
+    .select('id')
+    .single()
+
+  if (error) {
+    throw error
+  }
+
+  await uploadListingPhotos({
+    listingId: data.id,
+    ownerId: userId,
+    files,
+    startingSortOrder: 0,
+  })
+
+  return data.id
+}
+
+export async function fetchOwnedListingForEdit(params: { listingId: string; userId: string }) {
+  const { listingId, userId } = params
+  const { data, error } = await baseListingSelectQuery()
+    .eq('id', listingId)
+    .eq('user_id', userId)
+    .maybeSingle()
+
+  if (error) {
+    throw error
+  }
+
+  if (!data) {
+    return null
+  }
+
+  const row = data as ListingRow
+
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    price: row.price,
+    location: row.location,
+    photos: (row.listing_photos ?? [])
+      .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+      .map((photo) => ({
+        id: photo.id,
+        path: photo.photo_path,
+        url: getPublicPhotoUrl(photo.photo_path) ?? '',
+        sortOrder: photo.sort_order ?? 0,
+      })),
+  } satisfies EditableListing
+}
+
+export async function updateOwnedListingWithPhotos(params: {
+  listingId: string
+  userId: string
+  listing: ListingWriteInput
+  newFiles: File[]
+  removePhotoPaths: string[]
+}) {
+  const { listingId, userId, listing, newFiles, removePhotoPaths } = params
+
+  const { error: listingUpdateError } = await supabase
+    .from('listings')
+    .update({
+      title: listing.title,
+      description: listing.description,
+      price: listing.price,
+      location: listing.location,
+    })
+    .eq('id', listingId)
+    .eq('user_id', userId)
+
+  if (listingUpdateError) {
+    throw listingUpdateError
+  }
+
+  if (removePhotoPaths.length > 0) {
+    const { error: removeStorageError } = await supabase.storage.from('listing-photos').remove(removePhotoPaths)
+    if (removeStorageError) {
+      throw removeStorageError
+    }
+
+    const { error: removeRowsError } = await supabase
+      .from('listing_photos')
+      .delete()
+      .eq('listing_id', listingId)
+      .in('photo_path', removePhotoPaths)
+
+    if (removeRowsError) {
+      throw removeRowsError
+    }
+  }
+
+  if (newFiles.length > 0) {
+    const { data: existingRows, error: sortQueryError } = await supabase
+      .from('listing_photos')
+      .select('sort_order')
+      .eq('listing_id', listingId)
+      .order('sort_order', { ascending: false })
+      .limit(1)
+
+    if (sortQueryError) {
+      throw sortQueryError
+    }
+
+    const nextSortOrder = (existingRows?.[0]?.sort_order ?? -1) + 1
+
+    await uploadListingPhotos({
+      listingId,
+      ownerId: userId,
+      files: newFiles,
+      startingSortOrder: nextSortOrder,
+    })
   }
 }

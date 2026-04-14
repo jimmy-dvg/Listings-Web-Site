@@ -87,13 +87,13 @@ export function DashboardPage() {
             </div>
             <div className="flex gap-2">
               <Link
-                to={`/edit/${listing.id}`}
+                to={`/dashboard/edit/${listing.id}`}
                 className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-800"
               >
                 Edit
               </Link>
               <Link
-                to={`/delete/${listing.id}`}
+                to={`/dashboard/delete/${listing.id}`}
                 className="rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700"
               >
                 Delete
