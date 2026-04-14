@@ -17,6 +17,21 @@ type ListingRow = {
   listing_photos: ListingPhotoRow[] | null
 }
 
+type UserProfileRow = {
+  name: string | null
+  email: string
+  phone_number: string | null
+}
+
+export type ListingDetails = Listing & {
+  photoUrls: string[]
+  seller: {
+    name: string | null
+    email: string | null
+    phoneNumber: string | null
+  }
+}
+
 function getPublicPhotoUrl(path: string | null | undefined) {
   if (!path) {
     return undefined
@@ -40,6 +55,13 @@ function mapListing(row: ListingRow): Listing {
     createdAt: row.created_at,
     coverImageUrl: getPublicPhotoUrl(firstPhoto),
   }
+}
+
+function buildPhotoUrls(photos: ListingPhotoRow[] | null) {
+  return (photos ?? [])
+    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+    .map((photo) => getPublicPhotoUrl(photo.photo_path))
+    .filter((url): url is string => Boolean(url))
 }
 
 function baseListingSelectQuery() {
@@ -104,4 +126,41 @@ export async function fetchListingById(id: string): Promise<Listing | null> {
   }
 
   return data ? mapListing(data as ListingRow) : null
+}
+
+export async function fetchListingDetailsById(id: string): Promise<ListingDetails | null> {
+  const { data, error } = await baseListingSelectQuery().eq('id', id).maybeSingle()
+
+  if (error) {
+    throw error
+  }
+
+  if (!data) {
+    return null
+  }
+
+  const listing = mapListing(data as ListingRow)
+  const photoUrls = buildPhotoUrls((data as ListingRow).listing_photos)
+
+  const { data: profile, error: profileError } = await supabase
+    .from('user_profiles')
+    .select('name,email,phone_number')
+    .eq('id', listing.ownerId)
+    .maybeSingle()
+
+  if (profileError) {
+    throw profileError
+  }
+
+  const sellerProfile = (profile as UserProfileRow | null) ?? null
+
+  return {
+    ...listing,
+    photoUrls,
+    seller: {
+      name: sellerProfile?.name ?? null,
+      email: sellerProfile?.email ?? null,
+      phoneNumber: sellerProfile?.phone_number ?? null,
+    },
+  }
 }

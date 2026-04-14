@@ -1,11 +1,15 @@
 import { Link, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { fetchListingById } from '../lib/listings'
-import type { Listing } from '../types/listing'
+import { fetchListingDetailsById } from '../lib/listings'
+import type { ListingDetails } from '../lib/listings'
+
+const FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80'
 
 export function ListingDetailsPage() {
   const { id } = useParams()
-  const [listing, setListing] = useState<Listing | null>(null)
+  const [listing, setListing] = useState<ListingDetails | null>(null)
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -20,9 +24,10 @@ export function ListingDetailsPage() {
 
       try {
         setError('')
-        const nextListing = await fetchListingById(id)
+        const nextListing = await fetchListingDetailsById(id)
         if (active) {
           setListing(nextListing)
+          setActivePhotoIndex(0)
         }
       } catch (err) {
         if (active) {
@@ -61,19 +66,85 @@ export function ListingDetailsPage() {
     )
   }
 
+  const sliderPhotos = listing.photoUrls.length > 0 ? listing.photoUrls : [FALLBACK_IMAGE]
+  const safeIndex = Math.min(activePhotoIndex, sliderPhotos.length - 1)
+
+  const goPrevious = () => {
+    setActivePhotoIndex((current) => (current - 1 + sliderPhotos.length) % sliderPhotos.length)
+  }
+
+  const goNext = () => {
+    setActivePhotoIndex((current) => (current + 1) % sliderPhotos.length)
+  }
+
   return (
-    <section className="space-y-6">
-      <img
-        src={listing.coverImageUrl ?? 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80'}
-        alt={listing.title}
-        className="h-72 w-full rounded-2xl object-cover"
-      />
-      <div className="space-y-3">
-        <h1 className="text-3xl font-semibold text-slate-900">{listing.title}</h1>
-        <p className="text-slate-600">{listing.location}</p>
-        <p className="text-lg font-semibold text-slate-900">${listing.price} / month</p>
+    <section className="space-y-8">
+      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <div className="relative">
+          <img src={sliderPhotos[safeIndex]} alt={listing.title} className="h-80 w-full object-cover sm:h-[28rem]" />
+
+          {sliderPhotos.length > 1 ? (
+            <>
+              <button
+                type="button"
+                onClick={goPrevious}
+                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/85 px-3 py-2 text-sm font-semibold text-slate-800 shadow"
+              >
+                Prev
+              </button>
+              <button
+                type="button"
+                onClick={goNext}
+                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/85 px-3 py-2 text-sm font-semibold text-slate-800 shadow"
+              >
+                Next
+              </button>
+            </>
+          ) : null}
+        </div>
+
+        <div className="grid grid-cols-4 gap-2 border-t border-slate-200 bg-slate-50 p-3 sm:grid-cols-6">
+          {sliderPhotos.map((photoUrl, index) => (
+            <button
+              key={photoUrl}
+              type="button"
+              onClick={() => setActivePhotoIndex(index)}
+              className={`overflow-hidden rounded-lg border ${
+                safeIndex === index ? 'border-slate-900 ring-2 ring-slate-300' : 'border-slate-200'
+              }`}
+            >
+              <img src={photoUrl} alt={`${listing.title} photo ${index + 1}`} className="h-16 w-full object-cover" />
+            </button>
+          ))}
+        </div>
       </div>
-      <p className="max-w-3xl text-slate-700">{listing.description}</p>
+
+      <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+        <article className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{listing.title}</h1>
+          <p className="text-slate-600">{listing.location}</p>
+          <p className="text-2xl font-bold text-slate-900">${listing.price}</p>
+          <p className="text-sm text-slate-500">Posted on {new Date(listing.createdAt).toLocaleDateString()}</p>
+
+          <div>
+            <h2 className="mb-2 text-lg font-semibold text-slate-900">Description</h2>
+            <p className="leading-7 text-slate-700">{listing.description}</p>
+          </div>
+        </article>
+
+        <aside className="space-y-3 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-slate-900">Seller Contacts</h2>
+          <p className="text-sm text-slate-700">
+            <span className="font-medium">Name:</span> {listing.seller.name ?? 'Not provided'}
+          </p>
+          <p className="text-sm text-slate-700">
+            <span className="font-medium">Email:</span> {listing.seller.email ?? 'Not provided'}
+          </p>
+          <p className="text-sm text-slate-700">
+            <span className="font-medium">Phone:</span> {listing.seller.phoneNumber ?? 'Not provided'}
+          </p>
+        </aside>
+      </div>
     </section>
   )
 }
