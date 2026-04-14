@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'dashboard/edit/:id',
+        path: 'edit/:id',
         element: (
           <ProtectedRoute>
             <EditListingPage />
@@ -61,7 +61,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'dashboard/delete/:id',
+        path: 'delete/:id',
         element: (
           <ProtectedRoute>
             <DeleteListingPage />

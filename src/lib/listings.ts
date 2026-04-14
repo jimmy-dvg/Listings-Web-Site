@@ -164,3 +164,35 @@ export async function fetchListingDetailsById(id: string): Promise<ListingDetail
     },
   }
 }
+
+export async function fetchMyListingsPage(params: {
+  userId: string
+  page: number
+  pageSize: number
+}): Promise<{ listings: Listing[]; total: number }> {
+  const { userId, page, pageSize } = params
+  const from = (page - 1) * pageSize
+  const to = from + pageSize - 1
+
+  const { data, error, count } = await baseListingSelectQuery()
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .range(from, to)
+
+  if (error) {
+    throw error
+  }
+
+  return {
+    listings: (data ?? []).map((row) => mapListing(row as ListingRow)),
+    total: count ?? 0,
+  }
+}
+
+export async function deleteMyListingById(listingId: string) {
+  const { error } = await supabase.from('listings').delete().eq('id', listingId)
+
+  if (error) {
+    throw error
+  }
+}
