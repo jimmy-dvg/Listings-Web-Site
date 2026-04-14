@@ -78,7 +78,7 @@ export function DashboardPage() {
           {listings.map((listing) => (
           <article
             key={listing.id}
-            className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+            className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
           >
             <img
               src={
@@ -88,7 +88,7 @@ export function DashboardPage() {
               alt={listing.title}
               className="h-44 w-full object-cover"
             />
-            <div className="flex h-full flex-col justify-between gap-4 p-4">
+            <div className="flex flex-1 flex-col justify-between gap-4 p-4">
               <div>
                 <h2 className="line-clamp-2 text-lg font-semibold text-slate-900">{listing.title}</h2>
                 <p className="text-sm text-slate-600">{listing.location}</p>
